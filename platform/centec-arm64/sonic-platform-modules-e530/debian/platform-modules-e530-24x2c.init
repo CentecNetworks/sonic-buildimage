@@ -39,10 +39,14 @@ function load_kernel_modules()
     modprobe dal
     modprobe tun
     modprobe tap
+    modprobe psample
+    modprobe act_sample
 }
 
 function remove_kernel_modules()
 {
+    modprobe -r act_sample
+    modprobe -r psample
     modprobe -r tap
     modprobe -r tun
     modprobe -r dal
