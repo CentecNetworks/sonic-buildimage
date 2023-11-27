@@ -53,21 +53,27 @@ static int ctc_mdio_write(struct mii_bus *bus, int mii_id, int reg, u16 value)
 {
 	int ret = 0;
 	u32 cmd = 0;
-	u32 tmp = 0;
+	u32 status = 0;
 	struct ctc_mdio_priv *priv = (struct ctc_mdio_priv *)bus->priv;
+	unsigned long start_time;
 
 	cmd = CTCMAC_MDIO_CMD_REGAD(reg) | CTCMAC_MDIO_CMD_PHYAD(mii_id)
 	    | CTCMAC_MDIO_CMD_OPCODE(1) | CTCMAC_MDIO_CMD_DATA(value);
 
 	writel(cmd, &priv->mdio_reg->MdioSocCmd0[0]);
 	writel(1, &priv->mdio_reg->MdioSocCmd0[1]);
-
-	ret = readl_poll_timeout(&priv->mdio_reg->MdioSocStatus0,
-				 tmp, tmp & CTCMAC_MDIO_STAT(1), 1000, 10000);
-
-	if (ret < 0) {
-		return -1;
+	
+	start_time = jiffies;
+	while(1) {
+		status = readl(&priv->mdio_reg->MdioSocStatus0);
+		if (time_after(jiffies, start_time + 250)) {
+			return -1;
+		}
+		else if (status & CTCMAC_MDIO_STAT(1)) {
+			break;
+		}
 	}
+
 
 	return 0;
 }
@@ -79,20 +85,26 @@ static int ctc_mdio_read(struct mii_bus *bus, int mii_id, int reg)
 	u32 status;
 	int value = 0;
 	struct ctc_mdio_priv *priv = (struct ctc_mdio_priv *)bus->priv;
+	unsigned long start_time;
 
 	cmd = CTCMAC_MDIO_CMD_REGAD(reg) | CTCMAC_MDIO_CMD_PHYAD(mii_id)
 	    | CTCMAC_MDIO_CMD_OPCODE(2);
 
 	writel(cmd, &priv->mdio_reg->MdioSocCmd0[0]);
 	writel(1, &priv->mdio_reg->MdioSocCmd0[1]);
-
-	ret = readl_poll_timeout(&priv->mdio_reg->MdioSocStatus0,
-				 status, status & CTCMAC_MDIO_STAT(1), 1000,
-				 10000);
-	if (ret < 0) {
-		printk(KERN_ERR "ctc_mdio_read1\n");
-		return -1;
+	
+	start_time = jiffies;
+	while(1) {
+		status = readl(&priv->mdio_reg->MdioSocStatus0);
+		if (time_after(jiffies, start_time + 250)) {
+			printk(KERN_ERR "ctc_mdio_read1\n");
+			return -1;
+		}
+		else if (status & CTCMAC_MDIO_STAT(1)) {
+			break;
+		}
 	}
+
 
 	value = (readl(&priv->mdio_reg->MdioSocStatus0) & 0xffff);
 

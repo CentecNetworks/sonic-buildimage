@@ -290,7 +290,7 @@ static int ctcmac_of_init(struct platform_device *ofdev,
 	priv->num_tx_queues = num_tx_qs;
 	regmap_read(regmap_base, offsetof(struct SysCtl_regs, SysCtlSysRev),
 		    &val);
-	priv->version = val;
+	priv->version = 0;
 	netif_set_real_num_rx_queues(dev, num_rx_qs);
 	priv->num_rx_queues = num_rx_qs;
 
@@ -749,7 +749,7 @@ static int ctcmac_maximize_margin_of_cmu_tempearture_ramp(struct ctcmac_private
 	/*for temperature -40~-20C, try (ctune-1) if (ctune-2) causes lol */
 	mdelay(10);
 	/*pll_lol_udl        0xe0[4]   read 0 */
-	val = ctc_mac_hss_read(priv, 0xe0, &val, 2);
+	ctc_mac_hss_read(priv, 0xe0, &val, 2);
 	if ((0 != (val & BIT(4))) && (delta == 2)) {
 		/*cfg_vco_byp_ctune  0x07[3:0] write (ctune - 1) */
 		ctune_cal = ctune - 1;
@@ -761,7 +761,7 @@ static int ctcmac_maximize_margin_of_cmu_tempearture_ramp(struct ctcmac_private
 	/*check pll lol */
 	mdelay(10);
 	/*pll_lol_udl        0xe0[4]   read 0 */
-	val = ctc_mac_hss_read(priv, 0xe0, &val, 2);
+	ctc_mac_hss_read(priv, 0xe0, &val, 2);
 	if (0 != (val & BIT(4))) {
 		printk(KERN_ERR
 		       "maximize margin of cmu tempearture ramp fail!\n");

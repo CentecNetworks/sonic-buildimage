@@ -183,7 +183,7 @@
 			compatible = "generic-ohci";
 			reg = <0x0 0x30580000 0x0 0x1000>;
 			interrupts = <GIC_SPI 46 IRQ_TYPE_LEVEL_HIGH>;
-			status = "disabled";
+			status = "okay";
 		};
 		
 		spi: spi@33100000 {
