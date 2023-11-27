@@ -719,11 +719,6 @@ static int ctcmac_maximize_margin_of_cmu_tempearture_ramp(struct ctcmac_private
 		return -1;
 	}
 
-	ctc_mac_hss_read(priv, 0x1c, &val, 2);
-	val &= 0xf8;
-	val |= 0x4;
-	ctc_mac_hss_write(priv, 0x1c, val, 2);
-
 	/*r_pll_dlol_en  0x30[0] write 1    enable pll lol status output */
 	ctc_mac_hss_read(priv, 0x30, &val, 2);
 	val |= BIT(0);
@@ -798,6 +793,7 @@ static int ctc_mac_pol_inv(struct ctcmac_private *priv)
 /* serdes init flow */
 static int ctc_mac_serdes_init(struct ctcmac_private *priv)
 {
+	u8 val = 0;
 	int ret = 0;
 	u32 status;
 	int delay_ms = 10;
@@ -942,6 +938,11 @@ static int ctc_mac_serdes_init(struct ctcmac_private *priv)
 	//ctc_mac_hss_write(priv, 0x93, 0x76, 1);
 	ctc_mac_hss_write(priv, 0x14, 0x01, 1);
 	ctc_mac_hss_write(priv, 0x26, 0x81, 1);
+
+	ctc_mac_hss_read(priv, 0x1c, &val, 2);
+	val &= 0xf8;
+	val |= 0x4;
+	ctc_mac_hss_write(priv, 0x1c, val, 2);
 
 	/* serdes post release */
 	writel(0x83806003, &priv->cpumacu_reg->CpuMacUnitHssCfg[0]);
