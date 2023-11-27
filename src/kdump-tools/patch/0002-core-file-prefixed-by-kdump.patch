@@ -1,6 +1,17 @@
---- a/debian/kdump-config.orig	2019-10-24 09:38:19.006679000 -0700
-+++ b/debian/kdump-config	2019-10-24 12:16:23.791899000 -0700
-@@ -639,8 +639,8 @@
+From f03a30d3a36c52f774e5efe078082de297b61fc3 Mon Sep 17 00:00:00 2001
+From: AlanYoush <yoush@centec.com>
+Date: Tue, 30 May 2023 08:20:52 +0000
+Subject: [PATCH] core file prefixed by kdump
+
+---
+ debian/kdump-config.in | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/debian/kdump-config.in b/debian/kdump-config.in
+index a1c3b4e..ae40492 100755
+--- a/debian/kdump-config.in
++++ b/debian/kdump-config.in
+@@ -639,8 +639,8 @@ function kdump_save_core()
  {
  	KDUMP_STAMP=`date +"%Y%m%d%H%M"`
  	KDUMP_STAMPDIR=$(define_stampdir $KDUMP_STAMP)
@@ -11,7 +22,7 @@
  	KDUMP_DMESGFILE="$KDUMP_STAMPDIR/dmesg.$KDUMP_STAMP"
  
  	# If we use NFS, verify that we can mount the FS
-@@ -755,8 +755,8 @@
+@@ -755,8 +755,8 @@ function kdump_save_core_to_ssh()
  	KDUMP_STAMP=`date +"%Y%m%d%H%M"`
  	KDUMP_STAMPDIR=$(define_stampdir $KDUMP_STAMP)
  
@@ -22,3 +33,6 @@
  	KDUMP_TMPDMESG="/tmp/dmesg.$KDUMP_STAMP"
  	KDUMP_DMESGFILE="$KDUMP_STAMPDIR/dmesg.$KDUMP_STAMP"
  	ERROR=0
+-- 
+2.25.1
+

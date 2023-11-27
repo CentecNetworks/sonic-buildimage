@@ -25,8 +25,10 @@ $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	stg import -s ../patch/series
 
 	# Build source and Debian packages
-	dpkg-buildpackage -rfakeroot -b -us -uc -Tbinary-indep -j$(SONIC_CONFIG_MAKE_JOBS) --admindir $(SONIC_DPKG_ADMINDIR)
+	# dpkg-buildpackage -rfakeroot -b -us -uc -Tbinary-indep -j$(SONIC_CONFIG_MAKE_JOBS) --admindir $(SONIC_DPKG_ADMINDIR)
+	dpkg-buildpackage -rfakeroot -b -us -uc -j$(SONIC_CONFIG_MAKE_JOBS) --admindir $(SONIC_DPKG_ADMINDIR)
 	popd
 
 	# Move the newly-built .deb packages to the destination directory
-	mv $* $(DEST)/
+	# mv $* $(DEST)/
+	mv kdump-tools_1.6.5-1_*.deb $(DEST)/kdump-tools_1.6.5-1_all.deb
