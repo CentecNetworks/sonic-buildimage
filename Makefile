@@ -1,7 +1,7 @@
 # SONiC make file
 
 NOJESSIE ?= 1
-NOSTRETCH ?= 0
+NOSTRETCH ?= 1
 
 ifeq ($(NOJESSIE),0)
 BUILD_JESSIE=1
