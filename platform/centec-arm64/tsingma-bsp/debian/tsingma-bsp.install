@@ -4,7 +4,6 @@ src/ctc5236_switch/ctc5236_switch.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
 src/pinctrl-ctc/pinctrl-ctc.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
 src/ctc_wdt/ctc_wdt.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
 src/ctcmac/ctcmac.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
-src/ctcmac/ctcmac_test.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
 src/ctcmac/ctc5236_mdio.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
 src/i2c-ctc/i2c-ctc.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra
 src/gpio-ctc/gpio-ctc.ko /lib/modules/4.19.0-12-2-arm64/kernel/extra

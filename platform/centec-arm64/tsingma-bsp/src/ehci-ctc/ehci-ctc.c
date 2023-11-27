@@ -20,13 +20,17 @@
 #include <linux/usb.h>
 #include <linux/usb/hcd.h>
 #include <linux/usb/ehci_pdriver.h>
-
+#include "../include/sysctl.h"
+#include <linux/regmap.h>
+#include <linux/mfd/syscon.h>
 #include "ehci.h"
 
 #define DRIVER_DESC "Centec EHCI platform driver"
 #define EHCI_MAX_CLKS 4
 #define EHCI_MAX_RSTS 4
 #define hcd_to_ehci_priv(h) ((struct ehci_ctc_priv *)hcd_to_ehci(h)->priv)
+
+static struct regmap *regmap_base;
 
 struct ehci_ctc_priv {
 	struct clk *clks[EHCI_MAX_CLKS];
@@ -134,12 +138,45 @@ static struct usb_ehci_pdata ehci_ctc_defaults = {
 #define KERN_CTC  KERN_ERR
 static int ehci_ctc_probe(struct platform_device *dev)
 {
+	u32 val;
 	struct usb_hcd *hcd;
 	struct resource *res_mem;
 	struct usb_ehci_pdata *pdata = dev_get_platdata(&dev->dev);
 	struct ehci_ctc_priv *priv;
 	struct ehci_hcd *ehci;
 	int err, irq, phy_num, clk = 0, rst;
+
+	regmap_base =
+	    syscon_regmap_lookup_by_phandle(dev->dev.of_node, "ctc,sysctrl");
+	if (IS_ERR(regmap_base))
+		return PTR_ERR(regmap_base);
+
+	/* USB interface reset config */
+	val = 0x7f;
+	regmap_write(regmap_base, offsetof(struct SysCtl_regs, SysUsbResetCtl),
+		     val);
+	udelay(1);
+	val &= ~SYS_USB_RESET_CTL_W0_CFG_USB_PHY_PWR_ON_RESET;
+	regmap_write(regmap_base, offsetof(struct SysCtl_regs, SysUsbResetCtl),
+		     val);
+	udelay(1);
+	val &=
+	    ~(SYS_USB_RESET_CTL_W0_CFG_USB_PHY_RESET |
+	      SYS_USB_RESET_CTL_W0_CFG_USB_PHY_PORT_RESET |
+	      SYS_USB_RESET_CTL_W0_CFG_USB_UTMI_RESET);
+	regmap_write(regmap_base, offsetof(struct SysCtl_regs, SysUsbResetCtl),
+		     val);
+	udelay(1);
+	val &=
+	    ~(SYS_USB_RESET_CTL_W0_CFG_USB_INTF_RESET |
+	      SYS_USB_RESET_CTL_W0_CFG_USB_AUX_RESET);
+	regmap_write(regmap_base, offsetof(struct SysCtl_regs, SysUsbResetCtl),
+		     val);
+	udelay(1);
+	val &= ~SYS_USB_RESET_CTL_W0_CFG_USB_PHY_ATE_RESET;
+	regmap_write(regmap_base, offsetof(struct SysCtl_regs, SysUsbResetCtl),
+		     val);
+	mdelay(500);
 
 	if (usb_disabled())
 		return -ENODEV;
@@ -152,8 +189,8 @@ static int ehci_ctc_probe(struct platform_device *dev)
 		pdata = &ehci_ctc_defaults;
 
 	err = dma_coerce_mask_and_coherent(&dev->dev,
-					   pdata->dma_mask_64 ?
-					   DMA_BIT_MASK(64) : DMA_BIT_MASK(32));
+					   pdata->dma_mask_64 ? DMA_BIT_MASK(64)
+					   : DMA_BIT_MASK(32));
 	if (err) {
 		dev_err(&dev->dev, "Error: DMA mask configuration failed\n");
 		return err;
@@ -359,7 +396,6 @@ static int ehci_ctc_resume(struct device *dev)
 
 	if (pdata->power_on) {
 		int err = pdata->power_on(pdev);
-
 		if (err < 0)
 			return err;
 	}
@@ -394,7 +430,7 @@ static struct platform_driver ehci_ctc_driver = {
 		   .name = "ehci-ctc",
 		   .pm = &ehci_ctc_pm_ops,
 		   .of_match_table = ctc_ehci_ids,
-	}
+		   }
 };
 
 static int __init ehci_ctc_init(void)

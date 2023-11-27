@@ -157,6 +157,7 @@
 	non-removable;
 	no-sd;
 	no-sdio;
+	cap-mmc-hw-reset;
 	voltage-ranges = <3300 3300>;	
 	status = "okay";
 };

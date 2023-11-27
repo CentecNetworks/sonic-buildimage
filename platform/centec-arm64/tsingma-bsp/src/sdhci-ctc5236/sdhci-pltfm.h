@@ -86,15 +86,15 @@ static inline void sdhci_be32bs_writeb(struct sdhci_host *host, u8 val, int reg)
 	int base = reg & ~0x3;
 	int shift = (reg & 0x3) * 8;
 
-	clrsetbits_be32(host->ioaddr + base , 0xff << shift, val << shift);
+	clrsetbits_be32(host->ioaddr + base, 0xff << shift, val << shift);
 }
 #endif /* CONFIG_MMC_SDHCI_BIG_ENDIAN_32BIT_BYTE_SWAPPER */
 
 extern void sdhci_get_of_property(struct platform_device *pdev);
 
 extern struct sdhci_host *sdhci_pltfm_init(struct platform_device *pdev,
-					  const struct sdhci_pltfm_data *pdata,
-					  size_t priv_size);
+					   const struct sdhci_pltfm_data *pdata,
+					   size_t priv_size);
 extern void sdhci_pltfm_free(struct platform_device *pdev);
 
 extern int sdhci_pltfm_register(struct platform_device *pdev,

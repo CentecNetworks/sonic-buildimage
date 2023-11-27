@@ -13,7 +13,7 @@
 #define GPIOLIB_H
 
 #include <linux/gpio/driver.h>
-#include <linux/gpio/consumer.h> /* for enum gpiod_flags */
+#include <linux/gpio/consumer.h>	/* for enum gpiod_flags */
 #include <linux/err.h>
 #include <linux/device.h>
 #include <linux/module.h>
@@ -49,18 +49,18 @@ struct acpi_device;
  * userspace.
  */
 struct gpio_device {
-	int			id;
-	struct device		dev;
-	struct cdev		chrdev;
-	struct device		*mockdev;
-	struct module		*owner;
-	struct gpio_chip	*chip;
-	struct gpio_desc	*descs;
-	int			base;
-	u16			ngpio;
-	const char		*label;
-	void			*data;
-	struct list_head        list;
+	int id;
+	struct device dev;
+	struct cdev chrdev;
+	struct device *mockdev;
+	struct module *owner;
+	struct gpio_chip *chip;
+	struct gpio_desc *descs;
+	int base;
+	u16 ngpio;
+	const char *label;
+	void *data;
+	struct list_head list;
 
 #ifdef CONFIG_PINCTRL
 	/*
@@ -92,15 +92,15 @@ struct acpi_gpio_info {
 };
 
 /* gpio suffixes used for ACPI and device tree lookup */
-static __maybe_unused const char * const gpio_suffixes[] = { "gpios", "gpio" };
+static __maybe_unused const char *const gpio_suffixes[] = { "gpios", "gpio" };
 
 #ifdef CONFIG_OF_GPIO
 struct gpio_desc *of_find_gpio(struct device *dev,
 			       const char *con_id,
-			       unsigned int idx,
-			       enum gpio_lookup_flags *flags);
+			       unsigned int idx, enum gpio_lookup_flags *flags);
 struct gpio_desc *of_get_named_gpiod_flags(struct device_node *np,
-		   const char *list_name, int index, enum of_gpio_flags *flags);
+					   const char *list_name, int index,
+					   enum of_gpio_flags *flags);
 int of_gpiochip_add(struct gpio_chip *gc);
 void of_gpiochip_remove(struct gpio_chip *gc);
 #else
@@ -111,13 +111,24 @@ static inline struct gpio_desc *of_find_gpio(struct device *dev,
 {
 	return ERR_PTR(-ENOENT);
 }
+
 static inline struct gpio_desc *of_get_named_gpiod_flags(struct device_node *np,
-		   const char *list_name, int index, enum of_gpio_flags *flags)
+							 const char *list_name,
+							 int index,
+							 enum of_gpio_flags
+							 *flags)
 {
 	return ERR_PTR(-ENOENT);
 }
-static inline int of_gpiochip_add(struct gpio_chip *gc) { return 0; }
-static inline void of_gpiochip_remove(struct gpio_chip *gc) { }
+
+static inline int of_gpiochip_add(struct gpio_chip *gc)
+{
+	return 0;
+}
+
+static inline void of_gpiochip_remove(struct gpio_chip *gc)
+{
+}
 #endif /* CONFIG_OF_GPIO */
 
 #ifdef CONFIG_ACPI
@@ -143,34 +154,48 @@ int acpi_gpio_count(struct device *dev, const char *con_id);
 
 bool acpi_can_fallback_to_crs(struct acpi_device *adev, const char *con_id);
 #else
-static inline void acpi_gpiochip_add(struct gpio_chip *chip) { }
-static inline void acpi_gpiochip_remove(struct gpio_chip *chip) { }
+static inline void acpi_gpiochip_add(struct gpio_chip *chip)
+{
+}
 
-static inline void
-acpi_gpiochip_request_interrupts(struct gpio_chip *chip) { }
+static inline void acpi_gpiochip_remove(struct gpio_chip *chip)
+{
+}
 
-static inline void
-acpi_gpiochip_free_interrupts(struct gpio_chip *chip) { }
+static inline void acpi_gpiochip_request_interrupts(struct gpio_chip *chip)
+{
+}
+
+static inline void acpi_gpiochip_free_interrupts(struct gpio_chip *chip)
+{
+}
 
 static inline int
-acpi_gpio_update_gpiod_flags(enum gpiod_flags *flags, struct acpi_gpio_info *info)
+acpi_gpio_update_gpiod_flags(enum gpiod_flags *flags,
+			     struct acpi_gpio_info *info)
 {
 	return 0;
 }
 
-static inline struct gpio_desc *
-acpi_find_gpio(struct device *dev, const char *con_id,
-	       unsigned int idx, enum gpiod_flags *dflags,
-	       enum gpio_lookup_flags *lookupflags)
+static inline struct gpio_desc *acpi_find_gpio(struct device *dev,
+					       const char *con_id,
+					       unsigned int idx,
+					       enum gpiod_flags *dflags,
+					       enum gpio_lookup_flags
+					       *lookupflags)
 {
 	return ERR_PTR(-ENOENT);
 }
-static inline struct gpio_desc *
-acpi_node_get_gpiod(struct fwnode_handle *fwnode, const char *propname,
-		    int index, struct acpi_gpio_info *info)
+
+static inline struct gpio_desc *acpi_node_get_gpiod(struct fwnode_handle
+						    *fwnode,
+						    const char *propname,
+						    int index,
+						    struct acpi_gpio_info *info)
 {
 	return ERR_PTR(-ENXIO);
 }
+
 static inline int acpi_gpio_count(struct device *dev, const char *con_id)
 {
 	return -ENODEV;
@@ -189,9 +214,9 @@ int gpiod_get_array_value_complex(bool raw, bool can_sleep,
 				  struct gpio_desc **desc_array,
 				  int *value_array);
 int gpiod_set_array_value_complex(bool raw, bool can_sleep,
-				   unsigned int array_size,
-				   struct gpio_desc **desc_array,
-				   int *value_array);
+				  unsigned int array_size,
+				  struct gpio_desc **desc_array,
+				  int *value_array);
 
 /* This is just passed between gpiolib and devres */
 struct gpio_desc *gpiod_get_from_of_node(struct device_node *node,
@@ -203,8 +228,8 @@ extern struct spinlock gpio_lock;
 extern struct list_head gpio_devices;
 
 struct gpio_desc {
-	struct gpio_device	*gdev;
-	unsigned long		flags;
+	struct gpio_device *gdev;
+	unsigned long flags;
 /* flag symbols are bit numbers */
 #define FLAG_REQUESTED	0
 #define FLAG_IS_OUT	1
@@ -218,17 +243,17 @@ struct gpio_desc {
 #define FLAG_TRANSITORY 12	/* GPIO may lose value in sleep or reset */
 
 	/* Connection label */
-	const char		*label;
+	const char *label;
 	/* Name of the GPIO */
-	const char		*name;
+	const char *name;
 };
 
 int gpiod_request(struct gpio_desc *desc, const char *label);
 void gpiod_free(struct gpio_desc *desc);
 int gpiod_configure_flags(struct gpio_desc *desc, const char *con_id,
-		unsigned long lflags, enum gpiod_flags dflags);
+			  unsigned long lflags, enum gpiod_flags dflags);
 int gpiod_hog(struct gpio_desc *desc, const char *name,
-		unsigned long lflags, enum gpiod_flags dflags);
+	      unsigned long lflags, enum gpiod_flags dflags);
 
 /*
  * Return the GPIO number of the passed descriptor relative to its chip

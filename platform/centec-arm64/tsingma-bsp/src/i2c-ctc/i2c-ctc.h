@@ -1,4 +1,5 @@
-/* Author: Wangyb <wangyb@centecnetworks.com>
+/*
+ * Author: Wangyb <wangyb@centecnetworks.com>
  *
  * Copyright 2005-2018, Centec Networks (Suzhou) Co., Ltd.
  *
@@ -112,7 +113,7 @@
 					 CTC_IC_TX_ABRT_TXDATA_NOACK | \
 					 CTC_IC_TX_ABRT_GCALL_NOACK)
 
-#define CTC_CMD_READ		0x0100
+#define CTC_CMD_READ   	0x0100
 #define CTC_STOP		0x0200
 #define CTC_RESTART		0x0400
 
@@ -124,6 +125,9 @@
 
 #define CTC_IC_STATUS_MA		0x0020
 #define CTC_IC_STATUS_TFE		0x0004
+
+#define CTC_IC_BUS_CLEAR_EN 	0xb0
+#define CTC_IC_BUS_CLEAR_THRD   0xb4
 
 enum xfer_type_e {
 	CTC_IC_INTERRUPT_TRANSFER,
@@ -159,4 +163,9 @@ struct ctc_i2c_dev {
 	u32 clk_freq;
 	u32 sda_hold_time;
 	u32 xfer_type;
+	struct regmap *regmap_base;
+	u32 soc_ver;
+#define CTC_REV_TM_1_0 0x0
+#define CTC_REV_TM_1_1 0x1
+	u32 i2c_num;
 };

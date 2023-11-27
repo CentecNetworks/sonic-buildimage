@@ -1,4 +1,5 @@
-/* rtc class driver for the SD2405 chip
+/*
+ * rtc class driver for the SD2405 chip
  *
  * Author: Dale Farnsworth <dale@farnsworth.org>
  *
@@ -45,7 +46,7 @@
 
 static struct i2c_driver sd2405_driver;
 
-static int sd2405_i2c_read_regs(struct i2c_client *client, u8 *buf)
+static int sd2405_i2c_read_regs(struct i2c_client *client, u8 * buf)
 {
 	struct i2c_msg msgs[1] = {
 		{
@@ -67,7 +68,9 @@ static int sd2405_i2c_read_regs(struct i2c_client *client, u8 *buf)
 static int sd2405_i2c_write_regs(struct i2c_client *client, u8 const *buf)
 {
 	int rc;
+
 	u8 temp_reg[SD2405_REG_LEN + 1] = { 0 };
+	memcpy(&temp_reg[1], buf, SD2405_REG_LEN);
 
 	struct i2c_msg msgs[1] = {
 		{
@@ -76,8 +79,6 @@ static int sd2405_i2c_write_regs(struct i2c_client *client, u8 const *buf)
 		 .len = SD2405_REG_LEN + 1,
 		 .buf = temp_reg}
 	};
-
-	memcpy(&temp_reg[1], buf, SD2405_REG_LEN);
 
 	rc = i2c_transfer(client->adapter, msgs, ARRAY_SIZE(msgs));
 	if (rc != ARRAY_SIZE(msgs))
@@ -114,7 +115,6 @@ static int sd2405_i2c_read_time(struct i2c_client *client, struct rtc_time *tm)
 static int sd2405_i2c_set_write_protect(struct i2c_client *client)
 {
 	int rc;
-
 	rc = i2c_smbus_write_byte_data(client, SD2405_REG_CTRL1, 0);
 	rc += i2c_smbus_write_byte_data(client, SD2405_REG_CTRL2, 0);
 	if (rc < 0) {
@@ -128,7 +128,6 @@ static int sd2405_i2c_set_write_protect(struct i2c_client *client)
 static int sd2405_i2c_clear_write_protect(struct i2c_client *client)
 {
 	int rc;
-
 	rc = i2c_smbus_write_byte_data(client, SD2405_REG_CTRL2,
 				       SD2405_REG_CONTROL1_WRITE);
 	rc +=
