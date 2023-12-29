@@ -3,7 +3,12 @@ SHELL = /bin/bash
 .SHELLFLAGS += -e
 
 MAIN_TARGET = openssh-server_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb
-DERIVED_TARGETS = openssh-server-dbgsym_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb
+#DERIVED_TARGETS = openssh-server-dbgsym_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb
+DERIVED_TARGETS = openssh-server-dbgsym_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb \
+				  openssh-client_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb \
+				  openssh-client-dbgsym_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb \
+				  openssh-sftp-server_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb \
+				  openssh-sftp-server-dbgsym_$(OPENSSH_VERSION)_$(CONFIGURED_ARCH).deb
 
 $(addprefix $(DEST)/, $(MAIN_TARGET)): $(DEST)/% :
 	# Obtain openssh: https://salsa.debian.org/ssh-team/openssh/-/tree/debian/1%257.9p1-10+deb10u2

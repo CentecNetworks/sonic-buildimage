@@ -323,7 +323,8 @@ sudo chmod 755 $FILESYSTEM_ROOT/usr/bin/restart_service
 
 
 # Install custom-built openssh sshd
-sudo dpkg --root=$FILESYSTEM_ROOT -i $debs_path/openssh-server_*.deb
+# sudo dpkg --root=$FILESYSTEM_ROOT -i $debs_path/openssh-server_*.deb
+sudo dpkg --root=$FILESYSTEM_ROOT -i $debs_path/openssh-server_${OPENSSH_VERSION}_*.deb $debs_path/openssh-client_${OPENSSH_VERSION}_*.deb $debs_path/openssh-sftp-server_${OPENSSH_VERSION}_*.deb
 
 # Copy crontabs
 sudo cp -f $IMAGE_CONFIGS/cron.d/* $FILESYSTEM_ROOT/etc/cron.d/
