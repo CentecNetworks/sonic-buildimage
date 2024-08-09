@@ -101,6 +101,14 @@ To build SONiC installer image and docker images, run the following commands:
     # Build SONiC image
     make all
 
+ **NOTE**:
+
+- If there are compilation issues caused by the absence of deb paths for Buster or Stretch, you can try the following command:
+~~~
+make configure PLATFORM=centec-arm64 PLATFORM_ARCH=arm64 MIRROR_SNAPSHOT=y
+make all MIRROR_SNAPSHOT=y
+~~~
+
 ## Usage for ARM Architecture
 To build Arm32 bit for (ARMHF) plaform
     ARM build has dependency in docker version 18,

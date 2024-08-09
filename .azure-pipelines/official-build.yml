@@ -28,7 +28,7 @@ variables:
 
 stages:
 - stage: Build
-  pool: sonicbld
+  pool: sonicbld-1es
   variables:
     CACHE_MODE: wcache
     ${{ if eq(variables['Build.SourceBranchName'], '202012') }}:

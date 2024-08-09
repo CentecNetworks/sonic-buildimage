@@ -22,7 +22,7 @@ resources:
     ref: master
     endpoint: sonic-net
 
-pool: sonicbld
+pool: sonicbld-1es
 
 parameters:
   - name: jobFilters
