@@ -12,7 +12,20 @@ FROM {{ prefix }}debian:buster
 MAINTAINER gulv@microsoft.com
 
 COPY ["no-check-valid-until", "/etc/apt/apt.conf.d/"]
-COPY ["sources.list.{{ CONFIGURED_ARCH }}", "/etc/apt/sources.list"]
+#COPY ["sources.list.{{ CONFIGURED_ARCH }}", "/etc/apt/sources.list"]
+
+
+RUN echo "deb http://deb.debian.org/debian buster main contrib non-free" > /etc/apt/sources.list
+RUN echo "deb-src http://deb.debian.org/debian buster main contrib non-free" >> /etc/apt/sources.list
+
+RUN echo "deb http://deb.debian.org/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list
+RUN echo "deb-src http://deb.debian.org/debian-security buster/updates main contrib non-free" >> /etc/apt/sources.list
+
+RUN echo "deb http://deb.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list
+RUN echo "deb-src http://deb.debian.org/debian buster-updates main contrib non-free" >> /etc/apt/sources.list
+
+RUN echo "deb http://archive.debian.org/debian/ buster-backports main contrib non-free" >> /etc/apt/sources.list
+RUN echo "deb-src http://archive.debian.org/debian/ buster-backports main contrib non-free" >> /etc/apt/sources.list
 
 ## Make apt-get non-interactive
 ENV DEBIAN_FRONTEND=noninteractive
@@ -343,6 +356,8 @@ RUN sudo augtool --autosave "set /files/etc/dpkg/dpkg.cfg/force-confdef"
 RUN sudo augtool --autosave "set /files/etc/dpkg/dpkg.cfg/force-confold"
 
 # For linux build
+RUN apt-get install -y dwarves=1.19-1~bpo10+1
+RUN apt-get install -y kernel-wedge=2.102~bpo10+1
 RUN apt-get -y build-dep linux
 
 # For gobgp and telemetry build
