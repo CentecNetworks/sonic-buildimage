@@ -7,7 +7,6 @@ export DISTRIBUTION=$3
 
 DEFAULT_MIRROR_URL_PREFIX=http://packages.trafficmanager.net
 MIRROR_VERSION_FILE=
-#[[ "$SONIC_VERSION_CONTROL_COMPONENTS" == *deb* || $SONIC_VERSION_CONTROL_COMPONENTS == *all* ]] && MIRROR_VERSION_FILE=files/build/versions/default/versions-mirror && MIRROR_SNAPSHOT=y
 [[ "$SONIC_VERSION_CONTROL_COMPONENTS" == *deb* || $SONIC_VERSION_CONTROL_COMPONENTS == *all* ]] && MIRROR_VERSION_FILE=files/build/versions/default/versions-mirror
 [ -f target/versions/default/versions-mirror ] && MIRROR_VERSION_FILE=target/versions/default/versions-mirror
 
@@ -21,7 +20,6 @@ DEFAULT_MIRROR_SECURITY_URLS=http://debian-archive.trafficmanager.net/debian-sec
 
 # The debian-archive.trafficmanager.net does not support armhf, use debian.org instead
 if [ "$ARCHITECTURE" == "armhf" ] || [ "$ARCHITECTURE" == "arm64" ]; then
-    #DEFAULT_MIRROR_URLS=http://deb.debian.org/debian/
     if [ "$DISTRIBUTION" == "buster" ]; then
         DEFAULT_MIRROR_URLS=http://archive.debian.org/debian/
     fi
