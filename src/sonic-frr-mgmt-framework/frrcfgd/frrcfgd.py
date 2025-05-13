@@ -1422,7 +1422,10 @@ def hdl_static_route(daemon, cmd_str, op, st_idx, args, data):
         dist_list = arg_list(args[7])
         nh_vrf_list = arg_list(args[8])
         ip_nh_set = IpNextHopSet(af, bkh_list, nh_list, track_list, intf_list, tag_list, dist_list, nh_vrf_list)
-    cur_nh_set = daemon.static_route_list.get(vrf, {}).get(ip_prefix, IpNextHopSet(af))
+    if daemon.static_route_list == {}:
+        cur_nh_set = set()
+    else:
+        cur_nh_set = daemon.static_route_list.get(vrf, {}).get(ip_prefix, IpNextHopSet(af))
     diff_set = ip_nh_set.symmetric_difference(cur_nh_set)
     op_cmd_list = {}
     for ip_nh in diff_set:
@@ -2195,6 +2198,8 @@ class BGPConfigDaemon:
 
         # VRF ==> ip_prefix ==> nexthop list
         self.static_route_list = {}
+        # using PubSub process config_db
+        '''
         sroute_table = self.config_db.get_table('STATIC_ROUTE')
         get_list = lambda v: v.split(',') if v is not None else None
         for key, entry in sroute_table.items():
@@ -2209,6 +2214,7 @@ class BGPConfigDaemon:
                                         nh_attr('blackhole'), nh_attr('nexthop'),nh_attr('track'),
                                         nh_attr('ifname'), nh_attr('tag'), nh_attr('distance'),
                                         nh_attr('nexthop-vrf'))
+        '''
 
         self.table_handler_list = [
             ('VRF', self.vrf_handler),

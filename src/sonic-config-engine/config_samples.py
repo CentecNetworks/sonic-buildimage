@@ -13,7 +13,7 @@ else:
 def generate_common_config(data):
     data['FLEX_COUNTER_TABLE'] = {
         'ACL': {
-            'FLEX_COUNTER_STATUS': 'disable',
+            'FLEX_COUNTER_STATUS': 'enable',
             'FLEX_COUNTER_DELAY_STATUS': 'true',
             'POLL_INTERVAL': '10000'
         }
