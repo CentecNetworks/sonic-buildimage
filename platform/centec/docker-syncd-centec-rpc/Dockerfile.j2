@@ -30,7 +30,9 @@ RUN apt-get update \
     cmake               \
     libqt5core5a        \
     libqt5network5      \
-    libboost-atomic1.71.0
+    libboost-atomic1.71.0 \
+    libnl-3-dev         \
+    libnl-genl-3-dev
 
 RUN dpkg_apt() { [ -f $1 ] && { dpkg -i $1 || apt-get -y install -f; } || return 1; } ; \
 {% for deb in docker_syncd_centec_rpc_debs.split(' ') -%}
